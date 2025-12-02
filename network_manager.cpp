@@ -10,7 +10,7 @@ NetworkManager::NetworkManager(QObject *parent) : QObject(parent)
     testUser.account = "1";
     testUser.username = "测试用户";
     testUser.password = "111111";
-    testUser.phone = "13800138000";
+    testUser.phone = "11111111111";
     testUser.gender = "男";
     testUser.birthDate = QDate(2000,1,1);
     testUser.avatarPath = "";
@@ -59,6 +59,10 @@ void NetworkManager::getUserOrders(const QString &userId)
         foreach (const QString &orderId, orderIds) {
             if (orderMap.contains(orderId)) {
                 OrderInfo order = orderMap[orderId];
+                // 跳过已取消的订单
+                if (order.status == "已取消") {
+                    continue;
+                }
                 // 更新剩余时间（模拟）
                 QDateTime now = QDateTime::currentDateTime();
                 int elapsed = order.createTime.secsTo(now) / 60;
@@ -151,11 +155,11 @@ void NetworkManager::sendRegisterRequest(UserInfo userInfo)
     emit registerResult(true, "注册成功！");
 }
 
-void NetworkManager::sendLoginRequest(QString accountOrUsername, QString password)
+void NetworkManager::sendLoginRequest(QString accountOrPhone, QString password)
 {
     for(auto it = userMap.begin(); it != userMap.end(); ++it){
         UserInfo user = it.value();
-        if((user.account == accountOrUsername || user.username == accountOrUsername)
+        if((user.account == accountOrPhone || user.phone == accountOrPhone)
             && user.password == password){
             emit loginResult(true, user);
             return;

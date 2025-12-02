@@ -177,6 +177,9 @@ void OrderWidget::refreshOrders()
     if (!currentUserId.isEmpty()) {
         NetworkManager::getInstance()->getUserOrders(currentUserId);
         titleLabel->setText(QString("我的订单（用户：%1）").arg(currentUserId));
+    } else {
+        // 如果用户ID为空，可以显示提示，但不要用QMessageBox
+        qDebug() << "用户ID为空，无法查询订单";
     }
 }
 
@@ -187,10 +190,38 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
     currentOrders = orders;
 
     if (orders.isEmpty()) {
-        // 如果没有订单，显示空提示
-        QMessageBox::information(this, "提示", "暂无订单记录");
+        // 显示友好的空状态提示
+        int row = orderTable->rowCount();
+        orderTable->insertRow(row);
+
+        QTableWidgetItem *emptyItem = new QTableWidgetItem("📭 暂无订单记录");
+        emptyItem->setTextAlignment(Qt::AlignCenter);
+        emptyItem->setForeground(QColor("#666666"));
+        emptyItem->setFont(QFont("Microsoft YaHei", 14, QFont::Normal));
+        emptyItem->setFlags(emptyItem->flags() & ~Qt::ItemIsEditable & ~Qt::ItemIsSelectable);
+
+        orderTable->setItem(row, 0, emptyItem);
+        orderTable->setSpan(row, 0, 1, 10);
+        orderTable->setRowHeight(row, 120);
+
+        // 隐藏表头
+        orderTable->horizontalHeader()->setVisible(false);
+
+        // 可选：添加更多说明
+        orderTable->insertRow(orderTable->rowCount());
+        QTableWidgetItem *hintItem = new QTableWidgetItem("去首页购买机票，开启您的旅程 ✈️");
+        hintItem->setTextAlignment(Qt::AlignCenter);
+        hintItem->setForeground(QColor("#999999"));
+        hintItem->setFont(QFont("Microsoft YaHei", 11));
+        hintItem->setFlags(hintItem->flags() & ~Qt::ItemIsEditable & ~Qt::ItemIsSelectable);
+        orderTable->setItem(orderTable->rowCount() - 1, 0, hintItem);
+        orderTable->setSpan(orderTable->rowCount() - 1, 0, 1, 10);
+        orderTable->setRowHeight(orderTable->rowCount() - 1, 60);
+
         return;
     }
+
+    orderTable->horizontalHeader()->setVisible(true);
 
     // 按创建时间降序排序
     QList<OrderInfo> sortedOrders = orders;
