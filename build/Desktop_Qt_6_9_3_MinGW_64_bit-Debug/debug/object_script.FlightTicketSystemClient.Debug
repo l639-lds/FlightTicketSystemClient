@@ -1,3 +1,4 @@
+debug/change_flight_dialog.o
 debug/flight_result_widget.o
 debug/login_widget.o
 debug/main.o
@@ -7,6 +8,7 @@ debug/order_widget.o
 debug/personal_center_widget.o
 debug/register_widget.o
 debug/qrc_resources.o
+debug/moc_change_flight_dialog.o
 debug/moc_flight_result_widget.o
 debug/moc_login_widget.o
 debug/moc_mainwindow.o

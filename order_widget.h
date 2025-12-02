@@ -13,6 +13,7 @@
 #include <QDateEdit>
 #include <QDialog>
 #include "network_manager.h"
+#include "change_flight_dialog.h"
 
 class OrderWidget : public QWidget
 {
@@ -35,10 +36,12 @@ private slots:
     void onCancelOrderResult(bool success, QString errMsg);
     void onChangeOrderResult(bool success, QString errMsg, QString newOrderId);
     void showChangeFlightDialog(const QString &orderId);
+    void onChangeRequested(const QString &orderId, const FlightInfo &newFlight, const QString &newSeatClass);
 
 private:
     void initUI();
     void updateOrderTable(const QList<OrderInfo> &orders);
+    bool validateChangeConditions(const OrderInfo &order);
     QString getStatusColor(const QString &status);
     QString getSeatClassColor(const QString &seatClass);
 

@@ -196,7 +196,15 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
     QList<OrderInfo> sortedOrders = orders;
     std::sort(sortedOrders.begin(), sortedOrders.end(),
               [](const OrderInfo &a, const OrderInfo &b) {
-                  return a.createTime > b.createTime;
+                    // 如果状态相同，按创建时间排序
+                    if (a.status == b.status) {
+                        return a.createTime > b.createTime;
+                    }
+                    // 已改签的订单放在后面
+                    if (a.status == "已改签") return false;
+                    if (b.status == "已改签") return true;
+                    // 其他状态按创建时间排序
+                    return a.createTime > b.createTime;
               });
 
     for (int i = 0; i < sortedOrders.size(); ++i) {
@@ -350,7 +358,7 @@ QString OrderWidget::getStatusColor(const QString &status)
 {
     if (status == "已支付") return "#27AE60";
     if (status == "已取消") return "#E74C3C";
-    if (status == "已改签") return "#3498DB";
+    if (status == "已改签") return "#9B59B6";
     if (status == "已完成") return "#9B59B6";
     return "#333333";
 }
@@ -395,6 +403,26 @@ void OrderWidget::onChangeClicked()
     QPushButton *btn = qobject_cast<QPushButton*>(sender());
     if (btn) {
         QString orderId = btn->property("orderId").toString();
+
+        // 查找订单
+        OrderInfo targetOrder;
+        for (int i = 0; i < currentOrders.size(); ++i) {
+            if (currentOrders[i].orderId == orderId) {
+                targetOrder = currentOrders[i];
+                break;
+            }
+        }
+
+        if (targetOrder.orderId.isEmpty()) {
+            QMessageBox::warning(this, "错误", "订单信息无效");
+            return;
+        }
+
+        // 验证改签条件
+        if (!validateChangeConditions(targetOrder)) {
+            return;
+        }
+
         showChangeFlightDialog(orderId);
     }
 }
@@ -402,69 +430,60 @@ void OrderWidget::onChangeClicked()
 void OrderWidget::showChangeFlightDialog(const QString &orderId)
 {
     // 查找订单
-    OrderInfo *targetOrder = nullptr;
+    OrderInfo targetOrder;
     for (int i = 0; i < currentOrders.size(); ++i) {
         if (currentOrders[i].orderId == orderId) {
-            targetOrder = &currentOrders[i];
+            targetOrder = currentOrders[i];
             break;
         }
     }
 
-    if (!targetOrder) {
+    if (targetOrder.orderId.isEmpty()) {
         QMessageBox::warning(this, "错误", "订单信息无效");
         return;
     }
 
     // 创建改签对话框
-    QDialog dialog(this);
-    dialog.setWindowTitle(QString("改签订单 %1").arg(orderId));
-    dialog.setFixedSize(800, 600);
+    ChangeFlightDialog *dialog = new ChangeFlightDialog(targetOrder, this);
 
-    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    // 连接改签请求信号
+    connect(dialog, &ChangeFlightDialog::changeRequested,
+            this, &OrderWidget::onChangeRequested);
 
-    // 原订单信息
-    QGroupBox *originalGroup = new QGroupBox("原订单信息");
-    originalGroup->setStyleSheet("QGroupBox { font-weight: bold; }");
-    QGridLayout *originalLayout = new QGridLayout(originalGroup);
+    dialog->exec();
+    dialog->deleteLater();
+}
 
-    originalLayout->addWidget(new QLabel("航班号:"), 0, 0);
-    originalLayout->addWidget(new QLabel(targetOrder->flightNumber), 0, 1);
-    originalLayout->addWidget(new QLabel("行程:"), 1, 0);
-    originalLayout->addWidget(new QLabel(QString("%1 → %2").arg(targetOrder->departureCity).arg(targetOrder->arrivalCity)), 1, 1);
-    originalLayout->addWidget(new QLabel("出发时间:"), 2, 0);
-    originalLayout->addWidget(new QLabel(targetOrder->date.toString("yyyy年MM月dd日") + " " + targetOrder->departureTime.toString("HH:mm")), 2, 1);
-    originalLayout->addWidget(new QLabel("舱位类型:"), 3, 0);
-    originalLayout->addWidget(new QLabel(targetOrder->seatClass), 3, 1);
+void OrderWidget::onChangeRequested(const QString &orderId, const FlightInfo &newFlight, const QString &newSeatClass)
+{
+    // 调用网络管理器的改签功能
+    NetworkManager::getInstance()->changeOrder(orderId, newFlight, newSeatClass);
+}
 
-    layout->addWidget(originalGroup);
-
-    // TODO: 这里可以添加选择新航班的界面
-    // 由于时间关系，这里简化为直接选择新舱位
-
-    QLabel *noticeLabel = new QLabel("改签功能开发中，请稍后...");
-    noticeLabel->setStyleSheet("font-size: 16px; color: #E74C3C; font-weight: bold;");
-    noticeLabel->setAlignment(Qt::AlignCenter);
-
-    layout->addWidget(noticeLabel);
-    layout->addStretch();
-
-    // 按钮
-    QPushButton *confirmBtn = new QPushButton("确认改签");
-    QPushButton *cancelBtn = new QPushButton("取消");
-
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch();
-    buttonLayout->addWidget(confirmBtn);
-    buttonLayout->addWidget(cancelBtn);
-
-    layout->addLayout(buttonLayout);
-
-    connect(confirmBtn, &QPushButton::clicked, &dialog, &QDialog::accept);
-    connect(cancelBtn, &QPushButton::clicked, &dialog, &QDialog::reject);
-
-    if (dialog.exec() == QDialog::Accepted) {
-        QMessageBox::information(this, "提示", "改签功能开发中，敬请期待！");
+bool OrderWidget::validateChangeConditions(const OrderInfo &order)
+{
+    // 检查订单状态
+    if (order.status != "已支付") {
+        QMessageBox::warning(this, "不可改签", "只有'已支付'状态的订单可以改签");
+        return false;
     }
+
+    // 检查剩余时间
+    if (order.remainingTime <= 0) {
+        QMessageBox::warning(this, "不可改签", "订单已超过可改签时间");
+        return false;
+    }
+
+    // 检查距离起飞时间
+    QDateTime flightDateTime = QDateTime(order.date, order.departureTime);
+    int minutesToDeparture = QDateTime::currentDateTime().secsTo(flightDateTime) / 60;
+
+    if (minutesToDeparture <= 120) { // 起飞前2小时内不可改签
+        QMessageBox::warning(this, "不可改签", "距离起飞不足2小时，不可改签");
+        return false;
+    }
+
+    return true;
 }
 
 void OrderWidget::onOrderListResult(const QList<OrderInfo> &orders)

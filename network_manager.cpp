@@ -122,12 +122,13 @@ void NetworkManager::changeOrder(const QString &orderId, const FlightInfo &newFl
         else if (newSeatClass == "商务舱") newOrder.price = newFlight.businessPrice;
         else if (newSeatClass == "头等舱") newOrder.price = newFlight.firstClassPrice;
 
-        newOrder.status = "已改签";
+        newOrder.status = "已支付";
         newOrder.createTime = QDateTime::currentDateTime();
         newOrder.remainingTime = 60 * 24;
 
         // 原订单状态改为已改签
         order.status = "已改签";
+        order.remainingTime = 0;
 
         // 添加新订单
         addOrder(newOrder);

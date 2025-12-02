@@ -56,7 +56,11 @@ template <> constexpr inline auto OrderWidget::qt_create_metaobjectdata<qt_meta_
         "onChangeOrderResult",
         "newOrderId",
         "showChangeFlightDialog",
-        "orderId"
+        "orderId",
+        "onChangeRequested",
+        "FlightInfo",
+        "newFlight",
+        "newSeatClass"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -85,6 +89,10 @@ template <> constexpr inline auto OrderWidget::qt_create_metaobjectdata<qt_meta_
         // Slot 'showChangeFlightDialog'
         QtMocHelpers::SlotData<void(const QString &)>(15, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::QString, 16 },
+        }}),
+        // Slot 'onChangeRequested'
+        QtMocHelpers::SlotData<void(const QString &, const FlightInfo &, const QString &)>(17, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QString, 16 }, { 0x80000000 | 18, 19 }, { QMetaType::QString, 20 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -118,6 +126,7 @@ void OrderWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 6: _t->onCancelOrderResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 7: _t->onChangeOrderResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
         case 8: _t->showChangeFlightDialog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 9: _t->onChangeRequested((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<FlightInfo>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
         default: ;
         }
     }
@@ -146,14 +155,14 @@ int OrderWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 10)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

@@ -1,3 +1,4 @@
+release/change_flight_dialog.o
 release/flight_result_widget.o
 release/login_widget.o
 release/main.o
@@ -7,6 +8,7 @@ release/order_widget.o
 release/personal_center_widget.o
 release/register_widget.o
 release/qrc_resources.o
+release/moc_change_flight_dialog.o
 release/moc_flight_result_widget.o
 release/moc_login_widget.o
 release/moc_mainwindow.o
