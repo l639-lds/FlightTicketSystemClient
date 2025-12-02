@@ -25,7 +25,7 @@ void OrderWidget::initUI()
 
     // 主容器
     QWidget *mainContainer = new QWidget(this);
-    mainContainer->setStyleSheet("background: white; border-radius: 10px; margin: 20px;");
+    mainContainer->setStyleSheet("background: white; border-radius: 10px; margin: 0px;");
 
     QVBoxLayout *containerLayout = new QVBoxLayout(mainContainer);
     containerLayout->setContentsMargins(20, 20, 20, 20);
@@ -53,7 +53,7 @@ void OrderWidget::initUI()
     buttonLayout->setSpacing(10);
 
     refreshBtn = new QPushButton("🔄 刷新");
-    refreshBtn->setFixedSize(160, 80);
+    refreshBtn->setFixedSize(120, 50);
     refreshBtn->setStyleSheet(R"(
         QPushButton {
             background-color: #4CAF50;
@@ -68,7 +68,7 @@ void OrderWidget::initUI()
     )");
 
     backBtn = new QPushButton("← 返回");
-    backBtn->setFixedSize(160,80);
+    backBtn->setFixedSize(120,50);
     backBtn->setStyleSheet(R"(
         QPushButton {
             background-color: #f8f9fa;
@@ -99,6 +99,7 @@ void OrderWidget::initUI()
     orderTable->setHorizontalHeaderLabels(headers);
 
     // 设置表格属性
+    orderTable->horizontalHeader()->setVisible(true);
     orderTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     orderTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     orderTable->setAlternatingRowColors(true);
@@ -107,15 +108,16 @@ void OrderWidget::initUI()
 
     // 设置列宽
     QHeaderView *header = orderTable->horizontalHeader();
-    header->setStretchLastSection(true);
+    header->setFixedHeight(65);
+    header->setStretchLastSection(false);
     header->setSectionResizeMode(QHeaderView::Interactive);
     orderTable->setColumnWidth(0, 100);  // 航班号
     orderTable->setColumnWidth(1, 120);  // 行程
     orderTable->setColumnWidth(2, 120);  // 出发时间
-    orderTable->setColumnWidth(3, 100);  // 行程时间
+    orderTable->setColumnWidth(3, 80);  // 行程时间
     orderTable->setColumnWidth(4, 80);   // 舱位类型
     orderTable->setColumnWidth(5, 80);   // 乘客类型
-    orderTable->setColumnWidth(6, 100);  // 价格
+    orderTable->setColumnWidth(6, 90);  // 价格
     orderTable->setColumnWidth(7, 80);   // 状态
     orderTable->setColumnWidth(8, 150);  // 下单时间
     orderTable->setColumnWidth(9, 150);  // 操作
@@ -136,8 +138,8 @@ void OrderWidget::initUI()
             color: #333;
         }
         QTableWidget::item {
-            padding: 8px;
-            border: none;
+            padding: 0px;
+            border: 1px solid #e0e0e0;
             border-bottom: 1px solid #f0f0f0;
         }
         QTableWidget::item:selected {
@@ -151,7 +153,7 @@ void OrderWidget::initUI()
 
     // 添加到容器
     containerLayout->addWidget(topWidget);
-    containerLayout->addWidget(orderTable, 1);  // 使用伸展因子1让表格填充剩余空间
+    containerLayout->addWidget(orderTable,1);
 
     // 设置主布局
     QVBoxLayout *mainLayout = new QVBoxLayout(this);

@@ -907,6 +907,7 @@ release/moc_mainwindow.cpp: ../../mainwindow.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QHeaderView \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/qheaderview.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QDialog \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
 		release/moc_predefs.h \
 		../../../../QT/QT/6.9.3/mingw_64/bin/moc.exe
 	D:\QT\QT\6.9.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/QTproject/FlightTicketSystemClient/build/Desktop_Qt_6_9_3_MinGW_64_bit-Debug/release/moc_predefs.h -ID:/QT/QT/6.9.3/mingw_64/mkspecs/win32-g++ -ID:/QTproject/FlightTicketSystemClient -ID:/QT/QT/6.9.3/mingw_64/include -ID:/QT/QT/6.9.3/mingw_64/include/QtWidgets -ID:/QT/QT/6.9.3/mingw_64/include/QtGui -ID:/QT/QT/6.9.3/mingw_64/include/QtNetwork -ID:/QT/QT/6.9.3/mingw_64/include/QtCore -I. -ID:/QT/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -ID:/QT/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -ID:/QT/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -ID:/QT/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -ID:/QT/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -ID:/QT/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\mainwindow.h -o release\moc_mainwindow.cpp
@@ -1290,6 +1291,7 @@ release/moc_order_widget.cpp: ../../order_widget.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qdatetime.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qcalendar.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QDialog \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
 		../../network_manager.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QMap \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QString \
@@ -2607,6 +2609,7 @@ release/main.o: ../../main.cpp ../../../../../../QT/QT/6.9.3/mingw_64/include/Qt
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QHeaderView \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/qheaderview.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QDialog \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QSettings \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qsettings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\..\main.cpp
@@ -2891,6 +2894,7 @@ release/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QHeaderView \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/qheaderview.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QDialog \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
 		../../flight_result_widget.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QButtonGroup \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/qbuttongroup.h \
@@ -3037,7 +3041,9 @@ release/network_manager.o: ../../network_manager.cpp ../../network_manager.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/q20utility.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QSettings \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qsettings.h \
-		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QRandomGenerator \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qrandom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\network_manager.o ..\..\network_manager.cpp
 
 release/order_widget.o: ../../order_widget.cpp ../../order_widget.h \
@@ -3284,12 +3290,18 @@ release/order_widget.o: ../../order_widget.cpp ../../order_widget.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qdatetime.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qcalendar.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QDialog \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDateTime \
 		../../network_manager.h \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QMap \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QString \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QDate \
 		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QTimer \
-		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qtimer.h
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qtimer.h \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtWidgets/QGridLayout \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/QRandomGenerator \
+		../../../../../../QT/QT/6.9.3/mingw_64/include/QtCore/qrandom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\order_widget.o ..\..\order_widget.cpp
 
 release/personal_center_widget.o: ../../personal_center_widget.cpp ../../personal_center_widget.h \
