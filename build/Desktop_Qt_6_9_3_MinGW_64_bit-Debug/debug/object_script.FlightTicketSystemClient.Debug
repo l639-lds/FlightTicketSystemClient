@@ -1,0 +1,16 @@
+debug/flight_result_widget.o
+debug/login_widget.o
+debug/main.o
+debug/mainwindow.o
+debug/network_manager.o
+debug/order_widget.o
+debug/personal_center_widget.o
+debug/register_widget.o
+debug/qrc_resources.o
+debug/moc_flight_result_widget.o
+debug/moc_login_widget.o
+debug/moc_mainwindow.o
+debug/moc_network_manager.o
+debug/moc_order_widget.o
+debug/moc_personal_center_widget.o
+debug/moc_register_widget.o
