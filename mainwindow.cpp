@@ -226,37 +226,39 @@ functionWidget->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:0, y2:
             functionWidget->show();
         });
 
-        // 修改购票信号连接，添加乘客类型参数
-        connect(resultWidget, &FlightResultWidget::bookTicketSignal, this, [=](const FlightInfo &flight, const QString &seatClass, const QString &passengerType) {
+        connect(resultWidget, &FlightResultWidget::bookTicketSignal, this, [=](const FlightInfo &flight, const QString &seatClass, const QString &passengerType, int ticketCount) {
+            // ticketCount 现在总是1
             auto *connection = new QMetaObject::Connection();
-            *connection = connect(NetworkManager::getInstance(), &NetworkManager::bookResult,this, [=](bool success, const QString &orderId) {
-              // 处理完成后立即断开连接
-              disconnect(*connection);
-              delete connection;
+            *connection = connect(NetworkManager::getInstance(), &NetworkManager::bookResult,this, [=](bool success, const QStringList &orderIds, const QStringList &seatNumbers) {
+                disconnect(*connection);
+                delete connection;
 
-              if (success) {
-                QMessageBox::information(this, "成功",
-                                        QString("购票成功！\n订单号：%1\n航班：%2\n舱位：%3\n乘客类型：%4")
-                                            .arg(orderId)
-                                            .arg(flight.flightNumber)
-                                            .arg(seatClass)
-                                            .arg(passengerType));
+                if (success) {
+                    QString message = QString("购票成功！\n订单号：%1\n航班：%2\n舱位：%3\n乘客类型：%4\n座位号：%5")
+                                        .arg(orderIds.first())
+                                        .arg(flight.flightNumber)
+                                        .arg(seatClass)
+                                        .arg(passengerType)
+                                        .arg(seatNumbers.first());
 
-                  // 返回主界面
-                if (resultWidget) {
-                    this->centralWidget()->layout()->removeWidget(resultWidget);
-                    resultWidget->hide();
-                    resultWidget->deleteLater();
-                    functionWidget->show();
+                    QMessageBox::information(this, "成功", message);
+
+                    // 返回主界面
+                    if (resultWidget) {
+                        this->centralWidget()->layout()->removeWidget(resultWidget);
+                        resultWidget->hide();
+                        resultWidget->deleteLater();
+                        functionWidget->show();
+                    }
+                } else {
+                    QMessageBox::warning(this, "失败", "购票失败，请重试");
                 }
-            } else {
-                QMessageBox::warning(this, "失败", "购票失败，请重试");
-            }
+            });
+
+            // 发起购票请求，票数固定为1
+            NetworkManager::getInstance()->bookFlight(flight, seatClass, currentUser.account, 1);
         });
 
-        // 发起查询
-        NetworkManager::getInstance()->bookFlight(flight, seatClass, currentUser.account);
-    });
         NetworkManager::getInstance()->searchFlights(from, to, date);
     });
     connect(buyTicketBtn, &QPushButton::clicked, this, [=]() {

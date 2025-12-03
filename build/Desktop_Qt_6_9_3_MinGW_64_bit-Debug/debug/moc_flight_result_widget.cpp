@@ -46,6 +46,7 @@ template <> constexpr inline auto FlightResultWidget::qt_create_metaobjectdata<q
         "flight",
         "seatClass",
         "passengerType",
+        "ticketCount",
         "onBookClicked",
         "onBackClicked"
     };
@@ -54,13 +55,13 @@ template <> constexpr inline auto FlightResultWidget::qt_create_metaobjectdata<q
         // Signal 'backToSearchSignal'
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'bookTicketSignal'
-        QtMocHelpers::SignalData<void(const FlightInfo &, const QString &, const QString &)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 4, 5 }, { QMetaType::QString, 6 }, { QMetaType::QString, 7 },
+        QtMocHelpers::SignalData<void(const FlightInfo &, const QString &, const QString &, int)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 4, 5 }, { QMetaType::QString, 6 }, { QMetaType::QString, 7 }, { QMetaType::Int, 8 },
         }}),
         // Slot 'onBookClicked'
-        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onBackClicked'
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onBackClicked'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -85,7 +86,7 @@ void FlightResultWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->backToSearchSignal(); break;
-        case 1: _t->bookTicketSignal((*reinterpret_cast< std::add_pointer_t<FlightInfo>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
+        case 1: _t->bookTicketSignal((*reinterpret_cast< std::add_pointer_t<FlightInfo>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4]))); break;
         case 2: _t->onBookClicked(); break;
         case 3: _t->onBackClicked(); break;
         default: ;
@@ -94,7 +95,7 @@ void FlightResultWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (FlightResultWidget::*)()>(_a, &FlightResultWidget::backToSearchSignal, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (FlightResultWidget::*)(const FlightInfo & , const QString & , const QString & )>(_a, &FlightResultWidget::bookTicketSignal, 1))
+        if (QtMocHelpers::indexOfMethod<void (FlightResultWidget::*)(const FlightInfo & , const QString & , const QString & , int )>(_a, &FlightResultWidget::bookTicketSignal, 1))
             return;
     }
 }
@@ -137,8 +138,8 @@ void FlightResultWidget::backToSearchSignal()
 }
 
 // SIGNAL 1
-void FlightResultWidget::bookTicketSignal(const FlightInfo & _t1, const QString & _t2, const QString & _t3)
+void FlightResultWidget::bookTicketSignal(const FlightInfo & _t1, const QString & _t2, const QString & _t3, int _t4)
 {
-    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1, _t2, _t3);
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1, _t2, _t3, _t4);
 }
 QT_WARNING_POP

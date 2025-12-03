@@ -36,6 +36,7 @@ NetworkManager::NetworkManager(QObject *parent) : QObject(parent)
     testOrder.userId = "1";
     testOrder.remainingTime = 60 * 24;  // 24小时
     testOrder.flightDuration = 140;
+    testOrder.seatNumbers = {"F66"};
 
     orderMap[testOrder.orderId] = testOrder;
     userOrdersMap["1"].append(testOrder.orderId);
@@ -231,19 +232,50 @@ void NetworkManager::searchFlights(const QString &from, const QString &to, const
     emit flightSearchResult(result);
 }
 
-void NetworkManager::bookFlight(const FlightInfo &flight, const QString &seatClass, const QString &userId)
+void NetworkManager::bookFlight(const FlightInfo &flight, const QString &seatClass,
+                                const QString &userId, int ticketCount)
 {
-    // 模拟购票成功
-    bool success = true;
+    // 注意：虽然ticketCount参数保留，但实际值总是1
+    Q_UNUSED(ticketCount) // 明确标记未使用
 
-    // 使用 C++11 随机数
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, 999);
+    // 检查余票
+    int availableSeats = 0;
+    if (seatClass == "经济舱") availableSeats = flight.economySeats;
+    else if (seatClass == "商务舱") availableSeats = flight.businessSeats;
+    else if (seatClass == "头等舱") availableSeats = flight.firstClassSeats;
 
-    QString orderId = QString("ORD%1%2").arg(QDateTime::currentMSecsSinceEpoch()).arg(dis(gen));
+    if (availableSeats <= 0) {
+        emit bookResult(false, {}, {});
+        return;
+    }
 
-    // 创建订单信息
+    QStringList allSeatNumbers;
+    QStringList orderIds;
+    QRandomGenerator *generator = QRandomGenerator::global();
+
+    // 舱位前缀逻辑
+    QString prefix = "";
+    int start = 0, end = 0;
+    if (seatClass == "头等舱") {
+        prefix = "F"; start = 1; end = 20;
+    } else if (seatClass == "商务舱") {
+        prefix = "B"; start = 1; end = 40;
+    } else {
+        prefix = "E"; start = 1; end = 200;
+    }
+
+    // 只购买1张票
+    int seatNum = generator->bounded(start, end + 1);
+    QString seatNumber = QString("%1%2").arg(prefix).arg(seatNum, 2, 10, QChar('0'));
+    allSeatNumbers.append(seatNumber);
+
+    // 生成唯一订单ID
+    QString orderId = QString("ORD%1%2")
+                          .arg(QDateTime::currentMSecsSinceEpoch())
+                          .arg(generator->bounded(10000, 99999));
+    orderIds.append(orderId);
+
+    // 订单信息创建
     OrderInfo order;
     order.orderId = orderId;
     order.flightNumber = flight.flightNumber;
@@ -252,20 +284,22 @@ void NetworkManager::bookFlight(const FlightInfo &flight, const QString &seatCla
     order.date = flight.date;
     order.departureTime = flight.departureTime;
     order.seatClass = seatClass;
-    order.passengerType = "成人";  // 这里可以根据实际情况调整
+    order.passengerType = "成人";
     order.price = (seatClass == "经济舱") ? flight.economyPrice :
                       (seatClass == "商务舱") ? flight.businessPrice :
                       flight.firstClassPrice;
     order.status = "已支付";
     order.createTime = QDateTime::currentDateTime();
     order.userId = userId;
-    order.remainingTime = 60 * 24;  // 24小时
+    order.remainingTime = 60 * 24;
     order.flightDuration = flight.duration;
+    order.ticketCount = 1;
+    order.seatNumbers = QStringList() << seatNumber;
 
-    // 保存订单
     addOrder(order);
 
-    emit bookResult(success, orderId);
+    // 返回单个订单ID和座位号
+    emit bookResult(true, orderIds, allSeatNumbers);
 }
 
 QList<FlightInfo> NetworkManager::mockFlightData()

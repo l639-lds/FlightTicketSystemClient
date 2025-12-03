@@ -91,10 +91,10 @@ void OrderWidget::initUI()
 
     // 订单表格
     orderTable = new QTableWidget();
-    orderTable->setColumnCount(10);
+    orderTable->setColumnCount(11);
     QStringList headers = {
         "航班号", "行程", "出发时间", "行程时间","舱位类型",
-        "乘客类型", "价格", "状态", "下单时间", "操作"
+        "乘客类型", "价格", "状态", "下单时间","座位号", "操作"
     };
     orderTable->setHorizontalHeaderLabels(headers);
 
@@ -119,8 +119,9 @@ void OrderWidget::initUI()
     orderTable->setColumnWidth(5, 80);   // 乘客类型
     orderTable->setColumnWidth(6, 90);  // 价格
     orderTable->setColumnWidth(7, 80);   // 状态
-    orderTable->setColumnWidth(8, 150);  // 下单时间
-    orderTable->setColumnWidth(9, 150);  // 操作
+    orderTable->setColumnWidth(8, 120);  // 下单时间
+    orderTable->setColumnWidth(9, 120);  // 座位号
+    orderTable->setColumnWidth(10, 150);  // 操作
 
     // 表格样式
     orderTable->setStyleSheet(R"(
@@ -227,15 +228,7 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
     QList<OrderInfo> sortedOrders = orders;
     std::sort(sortedOrders.begin(), sortedOrders.end(),
               [](const OrderInfo &a, const OrderInfo &b) {
-                    // 如果状态相同，按创建时间排序
-                    if (a.status == b.status) {
-                        return a.createTime > b.createTime;
-                    }
-                    // 已改签的订单放在后面
-                    if (a.status == "已改签") return false;
-                    if (b.status == "已改签") return true;
-                    // 其他状态按创建时间排序
-                    return a.createTime > b.createTime;
+                  return a.createTime > b.createTime;
               });
 
     for (int i = 0; i < sortedOrders.size(); ++i) {
@@ -245,11 +238,6 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
         orderTable->insertRow(row);
 
         // 设置每列数据
-        // 1. 订单号
-        // QTableWidgetItem *orderIdItem = new QTableWidgetItem(order.orderId);
-        // orderIdItem->setTextAlignment(Qt::AlignCenter);
-        // orderTable->setItem(row, 0, orderIdItem);
-
         // 1. 航班号
         QTableWidgetItem *flightItem = new QTableWidgetItem(order.flightNumber);
         flightItem->setTextAlignment(Qt::AlignCenter);
@@ -311,7 +299,16 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
         createTimeItem->setTextAlignment(Qt::AlignCenter);
         orderTable->setItem(row, 8, createTimeItem);
 
-        // 10. 操作按钮
+        // 10. 座位号（新增）
+        QString seatInfo;
+        if (!order.seatNumbers.isEmpty()) {
+            seatInfo = order.seatNumbers.join(", ");
+        }
+        QTableWidgetItem *seatnumItem = new QTableWidgetItem(seatInfo);
+        seatItem->setTextAlignment(Qt::AlignCenter);
+        orderTable->setItem(row, 9, seatnumItem);
+
+        // 11. 操作按钮
         QWidget *buttonWidget = new QWidget();
 
         // 取消按钮
@@ -375,7 +372,7 @@ void OrderWidget::updateOrderTable(const QList<OrderInfo> &orders)
         buttonLayout->addWidget(cancelBtn);
         buttonLayout->addWidget(changeBtn);
 
-        orderTable->setCellWidget(row, 9, buttonWidget);
+        orderTable->setCellWidget(row, 10, buttonWidget);
 
         // 设置行高
         orderTable->setRowHeight(row, 65);

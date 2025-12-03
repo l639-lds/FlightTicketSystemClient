@@ -49,6 +49,8 @@ struct OrderInfo {
     QString userId;            // 用户ID
     int remainingTime;         // 剩余可取消时间（分钟）
     int flightDuration;        // 航班行驶时间（分钟）
+    int ticketCount;           // 购票数量
+    QStringList seatNumbers;   // 座位号列表
 };
 
 class NetworkManager : public QObject
@@ -63,14 +65,14 @@ public:
     NetworkManager(const NetworkManager&) = delete;
     NetworkManager& operator=(const NetworkManager&) = delete;
     void searchFlights(const QString &from, const QString &to, const QDate &date);
-    void bookFlight(const FlightInfo &flight, const QString &seatClass, const QString &userId);
+    void bookFlight(const FlightInfo &flight, const QString &seatClass, const QString &userId, int ticketCount);
 
 signals:
     void loginResult(bool success, UserInfo userInfo);
     void registerResult(bool success, QString errMsg);
     void updateUserInfoResult(bool success);
     void flightSearchResult(const QList<FlightInfo> &flights);
-    void bookResult(bool success, const QString &orderId);
+    void bookResult(bool success, const QStringList &orderIds, const QStringList &seatNumbers);
     void orderListResult(const QList<OrderInfo> &orders);  // 订单列表查询结果
     void cancelOrderResult(bool success, QString errMsg);  // 取消订单结果
     void changeOrderResult(bool success, QString errMsg, QString newOrderId);

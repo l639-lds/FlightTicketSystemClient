@@ -52,7 +52,8 @@ template <> constexpr inline auto NetworkManager::qt_create_metaobjectdata<qt_me
         "QList<FlightInfo>",
         "flights",
         "bookResult",
-        "orderId",
+        "orderIds",
+        "seatNumbers",
         "orderListResult",
         "QList<OrderInfo>",
         "orders",
@@ -74,6 +75,7 @@ template <> constexpr inline auto NetworkManager::qt_create_metaobjectdata<qt_me
         "getUserOrders",
         "userId",
         "cancelOrder",
+        "orderId",
         "changeOrder",
         "FlightInfo",
         "newFlight",
@@ -101,65 +103,65 @@ template <> constexpr inline auto NetworkManager::qt_create_metaobjectdata<qt_me
             { 0x80000000 | 10, 11 },
         }}),
         // Signal 'bookResult'
-        QtMocHelpers::SignalData<void(bool, const QString &)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 3 }, { QMetaType::QString, 13 },
+        QtMocHelpers::SignalData<void(bool, const QStringList &, const QStringList &)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 3 }, { QMetaType::QStringList, 13 }, { QMetaType::QStringList, 14 },
         }}),
         // Signal 'orderListResult'
-        QtMocHelpers::SignalData<void(const QList<OrderInfo> &)>(14, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 15, 16 },
+        QtMocHelpers::SignalData<void(const QList<OrderInfo> &)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 16, 17 },
         }}),
         // Signal 'cancelOrderResult'
-        QtMocHelpers::SignalData<void(bool, QString)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SignalData<void(bool, QString)>(18, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Bool, 3 }, { QMetaType::QString, 7 },
         }}),
         // Signal 'changeOrderResult'
-        QtMocHelpers::SignalData<void(bool, QString, QString)>(18, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 3 }, { QMetaType::QString, 7 }, { QMetaType::QString, 19 },
+        QtMocHelpers::SignalData<void(bool, QString, QString)>(19, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 3 }, { QMetaType::QString, 7 }, { QMetaType::QString, 20 },
         }}),
         // Slot 'sendRegisterRequest'
-        QtMocHelpers::SlotData<void(UserInfo)>(20, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(UserInfo)>(21, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 4, 5 },
         }}),
         // Slot 'sendLoginRequest'
-        QtMocHelpers::SlotData<void(QString, QString)>(21, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 22 }, { QMetaType::QString, 23 },
+        QtMocHelpers::SlotData<void(QString, QString)>(22, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 23 }, { QMetaType::QString, 24 },
         }}),
         // Slot 'updateUserInfo'
-        QtMocHelpers::SlotData<void(QString, QString, QDate, QString, QString)>(24, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 25 }, { QMetaType::QString, 26 }, { QMetaType::QDate, 27 }, { QMetaType::QString, 28 },
-            { QMetaType::QString, 29 },
+        QtMocHelpers::SlotData<void(QString, QString, QDate, QString, QString)>(25, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 26 }, { QMetaType::QString, 27 }, { QMetaType::QDate, 28 }, { QMetaType::QString, 29 },
+            { QMetaType::QString, 30 },
         }}),
         // Slot 'updateUserInfo'
-        QtMocHelpers::SlotData<void(QString, QString, QDate, QString)>(24, 2, QMC::AccessPublic | QMC::MethodCloned, QMetaType::Void, {{
-            { QMetaType::QString, 25 }, { QMetaType::QString, 26 }, { QMetaType::QDate, 27 }, { QMetaType::QString, 28 },
+        QtMocHelpers::SlotData<void(QString, QString, QDate, QString)>(25, 2, QMC::AccessPublic | QMC::MethodCloned, QMetaType::Void, {{
+            { QMetaType::QString, 26 }, { QMetaType::QString, 27 }, { QMetaType::QDate, 28 }, { QMetaType::QString, 29 },
         }}),
         // Slot 'updateUserInfo'
-        QtMocHelpers::SlotData<void(QString, QString, QDate)>(24, 2, QMC::AccessPublic | QMC::MethodCloned, QMetaType::Void, {{
-            { QMetaType::QString, 25 }, { QMetaType::QString, 26 }, { QMetaType::QDate, 27 },
+        QtMocHelpers::SlotData<void(QString, QString, QDate)>(25, 2, QMC::AccessPublic | QMC::MethodCloned, QMetaType::Void, {{
+            { QMetaType::QString, 26 }, { QMetaType::QString, 27 }, { QMetaType::QDate, 28 },
         }}),
         // Slot 'loadAvatarPath'
-        QtMocHelpers::SlotData<QString(QString)>(30, 2, QMC::AccessPublic, QMetaType::QString, {{
-            { QMetaType::QString, 25 },
+        QtMocHelpers::SlotData<QString(QString)>(31, 2, QMC::AccessPublic, QMetaType::QString, {{
+            { QMetaType::QString, 26 },
         }}),
         // Slot 'loadSignature'
-        QtMocHelpers::SlotData<QString(QString)>(31, 2, QMC::AccessPublic, QMetaType::QString, {{
-            { QMetaType::QString, 25 },
+        QtMocHelpers::SlotData<QString(QString)>(32, 2, QMC::AccessPublic, QMetaType::QString, {{
+            { QMetaType::QString, 26 },
         }}),
         // Slot 'getUserOrders'
-        QtMocHelpers::SlotData<void(const QString &)>(32, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 33 },
+        QtMocHelpers::SlotData<void(const QString &)>(33, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 34 },
         }}),
         // Slot 'cancelOrder'
-        QtMocHelpers::SlotData<void(const QString &)>(34, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 13 },
+        QtMocHelpers::SlotData<void(const QString &)>(35, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 36 },
         }}),
         // Slot 'changeOrder'
-        QtMocHelpers::SlotData<void(const QString &, const FlightInfo &, const QString &)>(35, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 13 }, { 0x80000000 | 36, 37 }, { QMetaType::QString, 38 },
+        QtMocHelpers::SlotData<void(const QString &, const FlightInfo &, const QString &)>(37, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 36 }, { 0x80000000 | 38, 39 }, { QMetaType::QString, 40 },
         }}),
         // Slot 'addOrder'
-        QtMocHelpers::SlotData<void(const OrderInfo &)>(39, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 40, 41 },
+        QtMocHelpers::SlotData<void(const OrderInfo &)>(41, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 42, 43 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -188,7 +190,7 @@ void NetworkManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 1: _t->registerResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 2: _t->updateUserInfoResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 3: _t->flightSearchResult((*reinterpret_cast< std::add_pointer_t<QList<FlightInfo>>>(_a[1]))); break;
-        case 4: _t->bookResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 4: _t->bookResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[3]))); break;
         case 5: _t->orderListResult((*reinterpret_cast< std::add_pointer_t<QList<OrderInfo>>>(_a[1]))); break;
         case 6: _t->cancelOrderResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 7: _t->changeOrderResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
@@ -217,7 +219,7 @@ void NetworkManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
             return;
         if (QtMocHelpers::indexOfMethod<void (NetworkManager::*)(const QList<FlightInfo> & )>(_a, &NetworkManager::flightSearchResult, 3))
             return;
-        if (QtMocHelpers::indexOfMethod<void (NetworkManager::*)(bool , const QString & )>(_a, &NetworkManager::bookResult, 4))
+        if (QtMocHelpers::indexOfMethod<void (NetworkManager::*)(bool , const QStringList & , const QStringList & )>(_a, &NetworkManager::bookResult, 4))
             return;
         if (QtMocHelpers::indexOfMethod<void (NetworkManager::*)(const QList<OrderInfo> & )>(_a, &NetworkManager::orderListResult, 5))
             return;
@@ -284,9 +286,9 @@ void NetworkManager::flightSearchResult(const QList<FlightInfo> & _t1)
 }
 
 // SIGNAL 4
-void NetworkManager::bookResult(bool _t1, const QString & _t2)
+void NetworkManager::bookResult(bool _t1, const QStringList & _t2, const QStringList & _t3)
 {
-    QMetaObject::activate<void>(this, &staticMetaObject, 4, nullptr, _t1, _t2);
+    QMetaObject::activate<void>(this, &staticMetaObject, 4, nullptr, _t1, _t2, _t3);
 }
 
 // SIGNAL 5

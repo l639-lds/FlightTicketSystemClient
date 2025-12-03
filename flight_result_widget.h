@@ -12,6 +12,7 @@
 #include <QBrush>
 #include <QFont>
 #include <QColor>
+#include <QSpinBox>
 #include "network_manager.h"
 
 class FlightResultWidget : public QWidget
@@ -26,7 +27,7 @@ public:
 
 signals:
     void backToSearchSignal();
-    void bookTicketSignal(const FlightInfo &flight, const QString &seatClass, const QString &passengerType);
+    void bookTicketSignal(const FlightInfo &flight, const QString &seatClass, const QString &passengerType, int ticketCount);
 
 private slots:
     void onBookClicked();
@@ -45,7 +46,7 @@ private:
 
     void initUI();
     void initSearchSection();
-    QWidget* createSeatOption(const QString &seatClass, double price,int seats, const QString &passengerType,QButtonGroup *buttonGroup);
+    QWidget* createSeatOption(const QString &seatClass, double price, int seats, const QString &passengerType, QButtonGroup *buttonGroup);
 };
 
 #endif

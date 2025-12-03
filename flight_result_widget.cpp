@@ -341,15 +341,13 @@ void FlightResultWidget::onBookClicked()
         int flightIndex = btn->property("flightIndex").toInt();
         QString passengerType = passengerTypeCombo->currentText();
 
-        qDebug() << "购票按钮点击: 航班索引=" << flightIndex << "乘客类型=" << passengerType;
-
         if (flightIndex >= 0 && flightIndex < currentFlights.size()) {
             const FlightInfo &flight = currentFlights[flightIndex];
 
             // 创建舱位类型选择对话框
             QDialog seatDialog(this);
             seatDialog.setWindowTitle("选择舱位类型");
-            seatDialog.setFixedSize(450, 400);
+            seatDialog.setFixedSize(450, 350);
             seatDialog.setStyleSheet(R"(
                 QDialog {
                     background-color: white;
@@ -375,11 +373,16 @@ void FlightResultWidget::onBookClicked()
             QButtonGroup *seatGroup = new QButtonGroup(&seatDialog);
             seatGroup->setExclusive(true);
 
+            // 存储选择数量的变量
+            int economyCount = 1, businessCount = 1, firstClassCount = 1;
+
             // 创建舱位选项
+            // 创建舱位选项（修改 createSeatOption 函数）
             QWidget *economyWidget = createSeatOption("经济舱", flight.economyPrice, flight.economySeats, passengerType, seatGroup);
             QWidget *businessWidget = createSeatOption("商务舱", flight.businessPrice, flight.businessSeats, passengerType, seatGroup);
-            QWidget *firstClassWidget = createSeatOption("头等舱", flight.firstClassPrice, flight.firstClassSeats, passengerType, seatGroup);
+            QWidget *firstClassWidget = createSeatOption("头等舱", flight.firstClassPrice, flight.firstClassSeats, passengerType,seatGroup);
 
+            // 布局数量选择
             dialogLayout->addWidget(titleLabel);
             dialogLayout->addWidget(passengerInfoLabel);
             dialogLayout->addSpacing(10);
@@ -390,6 +393,7 @@ void FlightResultWidget::onBookClicked()
 
             // 确认按钮
             QPushButton *confirmBtn = new QPushButton("确认购票");
+            confirmBtn->setEnabled(false);
             confirmBtn->setStyleSheet(R"(
                 QPushButton {
                     background-color: #0078D7;
@@ -420,11 +424,30 @@ void FlightResultWidget::onBookClicked()
             // 存储用户选择的变量
             QString selectedSeatClass;
 
+            // 当选择舱位时，启用确认按钮
+            connect(seatGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
+                    this, [&](QAbstractButton *button) {
+                        selectedSeatClass = button->property("seatClass").toString();
+                        confirmBtn->setEnabled(true);
+                    });
+
             // 连接确认按钮
             connect(confirmBtn, &QPushButton::clicked, &seatDialog, [&]() {
                 QAbstractButton *selectedSeat = seatGroup->checkedButton();
                 if (selectedSeat) {
                     selectedSeatClass = selectedSeat->property("seatClass").toString();
+
+                    // 检查余票
+                    int availableSeats = 0;
+                    if (selectedSeatClass == "经济舱") availableSeats = flight.economySeats;
+                    else if (selectedSeatClass == "商务舱") availableSeats = flight.businessSeats;
+                    else if (selectedSeatClass == "头等舱") availableSeats = flight.firstClassSeats;
+
+                    if (availableSeats <= 0) {
+                        QMessageBox::warning(&seatDialog, "提示", "该舱位已无余票");
+                        return;
+                    }
+
                     seatDialog.accept();
                 } else {
                     QMessageBox::warning(&seatDialog, "提示", "请选择舱位类型");
@@ -435,17 +458,19 @@ void FlightResultWidget::onBookClicked()
             if (seatDialog.exec() == QDialog::Accepted && !selectedSeatClass.isEmpty()) {
                 qDebug() << "用户选择: 舱位=" << selectedSeatClass << "乘客类型=" << passengerType;
 
-                // 发出信号，让主窗口处理购票逻辑
-                emit bookTicketSignal(flight, selectedSeatClass, passengerType);
+                // 发出信号，票数固定为1
+                emit bookTicketSignal(flight, selectedSeatClass, passengerType, 1);
             }
         }
     }
 }
 
-QWidget* FlightResultWidget::createSeatOption(const QString &seatClass, double price,int seats, const QString &passengerType,QButtonGroup *buttonGroup)
+QWidget* FlightResultWidget::createSeatOption(const QString &seatClass, double price,
+                                              int seats, const QString &passengerType,
+                                              QButtonGroup *buttonGroup)
 {
     QWidget *widget = new QWidget();
-    widget->setFixedHeight(70);
+    widget->setFixedHeight(60);
     widget->setMinimumWidth(350);
     widget->setStyleSheet(R"(
         QWidget {
@@ -461,8 +486,8 @@ QWidget* FlightResultWidget::createSeatOption(const QString &seatClass, double p
     )");
 
     QHBoxLayout *layout = new QHBoxLayout(widget);
-    layout->setContentsMargins(20, 10, 20, 10);
-    layout->setSpacing(20);
+    layout->setContentsMargins(15, 10, 15, 10);
+    layout->setSpacing(15);
 
     QRadioButton *radioBtn = new QRadioButton();
     radioBtn->setProperty("seatClass", seatClass);
@@ -473,12 +498,12 @@ QWidget* FlightResultWidget::createSeatOption(const QString &seatClass, double p
     QLabel *seatLabel = new QLabel(seatClass);
     seatLabel->setStyleSheet("font-weight: bold; color: #333; font-size: 14px; min-width: 60px;");
 
-    // 计算最终价格（可以根据乘客类型调整价格）
+    // 计算最终价格
     double finalPrice = price;
     if (passengerType == "儿童") {
-        finalPrice *= 0.5; // 儿童半价
+        finalPrice *= 0.5;
     } else if (passengerType == "学生") {
-        finalPrice *= 0.8; // 学生8折
+        finalPrice *= 0.8;
     }
 
     QLabel *priceLabel = new QLabel(QString("¥%1").arg(finalPrice, 0, 'f', 2));
@@ -497,6 +522,7 @@ QWidget* FlightResultWidget::createSeatOption(const QString &seatClass, double p
     layout->addWidget(priceLabel);
     layout->addSpacing(10);
     layout->addWidget(seatInfoLabel);
+    layout->addSpacing(10);
 
     return widget;
 }
